@@ -24,7 +24,7 @@ def get_date():
 
 def extract_metadata_from_pdf(file_path: str) -> dict:
     with open(file_path, "rb") as pdf_file:
-        reader = PyPDF4.PdfFileReader(pdf_file)  # Change this line
+        reader = PyPDF4.PdfFileReader(pdf_file, strict=False)  # Change this line
         if not reader.isEncrypted:
             metadata = reader.getDocumentInfo()
         else:
@@ -142,12 +142,13 @@ def ingest_new_file(file_path):
     # document_chunks = document_chunks[:10]
 
     # Step 3 + 4: Generate embeddings and store them in DB
-    vector_store = Chroma.from_documents(
-        document_chunks,
-        embeddings,
-        collection_name=os.getenv("default_collection_name"),
-        persist_directory=os.getenv("default_data_directory"),
-    )
+    if not document_chunks == [] or not embeddings == []:
+        vector_store = Chroma.from_documents(
+            document_chunks,
+            embeddings,
+            collection_name=os.getenv("default_collection_name"),
+            persist_directory=os.getenv("default_data_directory"),
+        )
 
     # Save DB locally
 

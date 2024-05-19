@@ -1,5 +1,5 @@
-from modules import Chat
-from modules import ingest_new_file
+from src.modules import Chat
+from src.modules import ingest_new_file
 import os
 from dotenv import load_dotenv
 
@@ -7,9 +7,12 @@ load_dotenv()
 
 def ingest_a_folder(folder_path):
     print("Ingesting PDFs now this may take a while")
-    for i in os.walk(folder_path):
+    all_files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
+    print(all_files)
+    for i in all_files:
+        print(i)
         if i.endswith(".pdf"):
-            ingest_new_file(i)
+            ingest_new_file(os.path.join(folder, i))
             print("Done with", i)
     print("Data stored successfully")
     
